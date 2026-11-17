@@ -4,9 +4,9 @@
 
 const CONFIG = {
   // Replace with the real business WhatsApp number: country code + number, digits only.
-  whatsapp: "233500000000",
-  instagram: "https://www.instagram.com/el.ori",
-  email: "hello@elori.com",
+  whatsapp: "233502981045",
+  instagram: "https://www.instagram.com/el_orriii",
+  email: "eloriii02@gmail.com",
   currency: "GHS"
 };
 
