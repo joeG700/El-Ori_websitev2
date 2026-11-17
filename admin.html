@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fefdff">
+  <title>El-Ori Admin</title>
+  <meta name="description" content="Private product management for the El-Ori store.">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1b1626;
+      --muted: #665e76;
+      --accent: #7b4fb5;
+      --wash: #f7f3fc;
+      --line: #eae2f4;
+      --danger: #a3344a;
+      --success: #176f50;
+      --shadow: 0 20px 50px -32px rgba(48, 30, 80, .38);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fefdff; color: var(--ink); font: 16px/1.5 "Jost", sans-serif; }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1180px, 100% - 36px); margin: 0 auto; padding: 26px 0 60px; }
+    .topbar, .top-actions, .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .topbar { margin-bottom: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; font: 600 1.65rem "Cormorant Garamond", Georgia, serif; }
+    .brand img { width: 42px; height: 42px; object-fit: contain; }
+    h1, h2, h3 { margin: 0 0 8px; line-height: 1.15; }
+    h1, h2 { font-family: "Cormorant Garamond", Georgia, serif; }
+    h1 { font-size: clamp(2rem, 5vw, 2.8rem); }
+    h2 { font-size: 1.8rem; }
+    p { margin: 0; }
+    .muted, .hint { color: var(--muted); }
+    .hint { font-size: .88rem; margin-top: 6px; }
+    .panel { background: white; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: clamp(18px, 3vw, 28px); }
+    .auth-panel { width: min(520px, 100%); margin: 8vh auto; }
+    .stack { display: grid; gap: 14px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .field { display: grid; gap: 6px; }
+    .field label { color: var(--muted); font-size: .82rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+    .field input, .field select {
+      width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 10px;
+      padding: 10px 12px; background: white; color: var(--ink);
+    }
+    .check-field { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+    .check-field input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; border: 1px solid transparent; border-radius: 999px; padding: 9px 17px; cursor: pointer; font-weight: 600; }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .primary { background: linear-gradient(110deg, #9bb3f9, #d39df5); color: var(--ink); }
+    .secondary { background: white; border-color: var(--line); }
+    .danger { color: var(--danger); background: #fff7f8; border-color: #f1d9df; }
+    .link-button { border: 0; padding: 0; background: none; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .status { min-height: 1.5em; color: var(--success); font-size: .92rem; }
+    .status.error { color: var(--danger); }
+    .split { display: grid; grid-template-columns: minmax(280px, .75fr) minmax(0, 1.6fr); gap: 20px; align-items: start; }
+    .toolbar { justify-content: flex-start; }
+    .table-wrap { overflow-x: auto; margin-top: 16px; }
+    table { width: 100%; min-width: 670px; border-collapse: collapse; }
+    th, td { padding: 11px 9px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+    th { color: var(--muted); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; }
+    td { font-size: .92rem; }
+    .product-cell { display: flex; align-items: center; gap: 10px; min-width: 210px; }
+    .product-cell img { width: 48px; height: 54px; object-fit: cover; border-radius: 8px; background: var(--wash); }
+    .product-cell strong { display: block; }
+    .product-cell small { color: var(--muted); }
+    .row-actions { display: flex; gap: 7px; }
+    .row-actions .btn { min-height: 34px; padding: 5px 11px; font-size: .83rem; }
+    .archived { opacity: .7; }
+    .image-preview { display: flex; align-items: center; gap: 12px; min-height: 62px; color: var(--muted); overflow-wrap: anywhere; }
+    .image-preview img { width: 54px; height: 62px; border-radius: 8px; object-fit: cover; background: var(--wash); }
+    [hidden] { display: none !important; }
+    @media (max-width: 800px) { .split { grid-template-columns: 1fr; } }
+    @media (max-width: 540px) {
+      .wrap { width: min(100% - 24px, 1180px); padding-top: 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .topbar { align-items: flex-start; }
+      .top-actions { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="topbar">
+      <a class="brand" href="index.html">
+        <img src="assets/emblem.png" alt="">
+        <span>El-Ori <span class="muted">Admin</span></span>
+      </a>
+      <div class="top-actions">
+        <a class="btn secondary" href="index.html">Back to storefront</a>
+        <button class="btn secondary" id="signOutBtn" type="button" hidden>Sign out</button>
+      </div>
+    </header>
+
+    <section class="panel auth-panel" id="authPanel">
+      <div id="signInView">
+        <h1>Owner sign in</h1>
+        <p class="muted" style="margin-bottom:20px">Sign in with an invited El-Ori admin email to manage the catalog.</p>
+        <form class="stack" id="signInForm">
+          <div class="field">
+            <label for="signInEmail">Email</label>
+            <input id="signInEmail" type="email" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="signInPassword">Password</label>
+            <input id="signInPassword" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="btn primary" type="submit">Sign in</button>
+          <button class="link-button" id="showResetBtn" type="button">Set or reset password by email</button>
+          <p class="status" id="authStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <form class="stack" id="resetForm" hidden>
+        <h1>Set or reset password</h1>
+        <p class="muted">We'll email a secure link to an invited admin account.</p>
+        <div class="field">
+          <label for="resetEmail">Admin email</label>
+          <input id="resetEmail" type="email" autocomplete="email" required>
+        </div>
+        <button class="btn primary" type="submit">Send password link</button>
+        <button class="link-button" id="backToSignInBtn" type="button">Back to sign in</button>
+        <p class="status" id="resetStatus" role="status" aria-live="polite"></p>
+      </form>
+
+      <form class="stack" id="recoveryForm" hidden>
+        <h1>Choose a new password</h1>
+        <p class="muted">Enter a new password for your El-Ori admin account.</p>
+        <div class="field">
+          <label for="newPassword">New password</label>
+          <input id="newPassword" type="password" autocomplete="new-password" minlength="8" required>
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Confirm password</label>
+          <input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required>
+        </div>
+        <button class="btn primary" type="submit">Update password</button>
+        <p class="status" id="recoveryStatus" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="dashboard" hidden>
+      <div class="topbar">
+        <div>
+          <h1>Product catalog</h1>
+          <p class="muted">Add new pieces, edit prices and photos, or archive and restore products.</p>
+        </div>
+        <span class="muted" id="signedInEmail"></span>
+      </div>
+      <div class="split">
+        <section class="panel">
+          <h2 id="editorTitle">Add a product</h2>
+          <form class="stack" id="productForm">
+            <input type="hidden" id="productId">
+            <div class="field">
+              <label for="productName">Product name</label>
+              <input id="productName" maxlength="120" required>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="productCategory">Category</label>
+                <select id="productCategory" required>
+                  <option>Necklaces</option>
+                  <option>Bracelets</option>
+                  <option>Earrings</option>
+                  <option>Rings</option>
+                  <option>Anklets</option>
+                  <option>Jewelry Sets</option>
+                  <option>Watches</option>
+                  <option>Gift Packages</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="productPrice">Price (GHS)</label>
+                <input id="productPrice" type="number" min="0" max="99999999" step="0.01" required>
+              </div>
+            </div>
+            <div class="field">
+              <label for="productImage">Product photo</label>
+              <input id="productImage" type="file" accept="image/jpeg,image/png,image/webp,image/avif">
+              <p class="hint">JPEG, PNG, WebP or AVIF; maximum 5 MB.</p>
+            </div>
+            <div class="image-preview" id="imagePreview" hidden></div>
+            <label class="check-field"><input id="productActive" type="checkbox" checked> Published on storefront</label>
+            <div class="toolbar">
+              <button class="btn primary" id="saveProductBtn" type="submit">Save product</button>
+              <button class="btn secondary" id="cancelEditBtn" type="button" hidden>Cancel edit</button>
+            </div>
+            <p class="status" id="adminStatus" role="status" aria-live="polite"></p>
+          </form>
+        </section>
+
+        <section class="panel">
+          <div class="toolbar" style="justify-content:space-between">
+            <div>
+              <h2>All products</h2>
+              <p class="muted">Archived pieces are visible here only.</p>
+            </div>
+            <button class="btn secondary" id="reloadProductsBtn" type="button">Refresh</button>
+          </div>
+          <p class="status" id="listStatus" role="status" aria-live="polite"></p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Product</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="productsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>width test</title></head>
+<body style="margin:0;font:12px monospace">
+<iframe id="f" src="http://127.0.0.1:8099/index.html" style="border:0"></iframe>
+<pre id="out">pending</pre>
+<script>
+  const params = new URLSearchParams(location.search);
+  const w = parseInt(params.get("w") || "390", 10);
+  const h = parseInt(params.get("h") || "844", 10);
+  const f = document.getElementById("f");
+  f.style.width = w + "px";
+  f.style.height = h + "px";
+  f.addEventListener("load", () => {
+    setTimeout(() => {
+      try {
+        const d = f.contentDocument;
+        const iw = f.contentWindow.innerWidth;
+        const offenders = [];
+        d.querySelectorAll("body *").forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0 && (r.right > iw + 1 || r.left < -1)) {
+            let cls = el.className;
+            if (cls && cls.baseVal !== undefined) cls = cls.baseVal;
+            offenders.push(el.tagName + (cls ? "." + String(cls).trim().replace(/\s+/g, ".") : "") + " [" + Math.round(r.left) + ".." + Math.round(r.right) + "]");
+          }
+        });
+        document.getElementById("out").textContent = JSON.stringify({
+          innerWidth: iw,
+          docScrollWidth: d.documentElement.scrollWidth,
+          bodyScrollWidth: d.body.scrollWidth,
+          horizontalOverflow: d.documentElement.scrollWidth > iw + 1,
+          offenders: offenders.slice(0, 40)
+        }, null, 2);
+      } catch (err) {
+        document.getElementById("out").textContent = "ERR " + err.message;
+      }
+    }, 2600);
+  });
+</script>
+</body>
+</html>

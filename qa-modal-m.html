@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>html,body{margin:0;background:#ddd}iframe{border:0;display:block}</style></head>
+<body>
+<iframe id="f" src="/index.html" width="480" height="600"></iframe>
+<script>
+  const f = document.getElementById("f");
+  f.addEventListener("load", () => setTimeout(() => {
+    try { f.contentWindow.openModal("tresor-jewelry-set"); document.title = "opened"; }
+    catch (e) { document.title = "ERR " + e.message; }
+  }, 1400));
+</script>
+</body></html>
